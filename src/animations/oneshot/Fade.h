@@ -3,11 +3,12 @@
 #include "animations/animations.h"
 #include "animations/indefinite/Static.h"
 
-class FadeRateOneShot : public OneShotAnimation
+class FadeOneShot : public OneShotAnimation
 {
 private:
     CRGB color;
     uint32_t startTime;
+    const uint32_t durationMs;
     float rate;
 
 public:
@@ -16,8 +17,11 @@ public:
      * @param color Target color to fade to.
      * @param rate Rate at which the animation should run; duration adjusts accordingly.
      */
-    FadeRateOneShot(CRGB color, float rate = 10.0f)
-        : color(color), startTime(0), rate(rate) {}
+    FadeOneShot(CRGB color, float rate = 10.0f)
+        : color(color), startTime(0), durationMs(0), rate(rate) {}
+    
+    FadeOneShot(CRGB color, uint32_t durationMs)
+        : color(color), startTime(0), durationMs(durationMs), rate(-1.0f) {}
 
     void render(CRGB* target, uint32_t currentTime, uint16_t ledCount) override
     {
@@ -42,6 +46,6 @@ public:
 
     uint32_t getDuration(uint16_t ledCount) const
     {
-        return max((uint32_t) 1, (uint32_t)(8000 / rate));
+        return rate > 0 ? max((uint32_t) 1, (uint32_t)(8000 / rate)) : durationMs;
     }
 };
