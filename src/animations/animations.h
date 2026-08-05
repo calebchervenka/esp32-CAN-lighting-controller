@@ -12,7 +12,7 @@ public:
      * @param currentTime Current timestamp in milliseconds.
      * @param ledCount Size of CRGB buffer.
      */
-    virtual void render(CRGB* target, uint32_t currentTime, uint16_t ledCount) = 0;
+    virtual void render(CRGB* target, uint32_t currentTime, bool invDirection = false, uint16_t ledCount) = 0;
 };
 
 class IndefiniteAnimation : public Animation {};

@@ -11,7 +11,8 @@ public:
     PulseAnimation(CRGB color, uint32_t periodMs = 2000)
         : color(color), periodMs(periodMs) {}
 
-    void render(CRGB* target, uint32_t currentTime, uint16_t ledCount) override {
+    void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override 
+    {
         // Smooth sine wave brightness modulation [0-255]
         uint8_t bright = quadwave8((currentTime * 255) / periodMs);
         fill_solid(target, ledCount, color);

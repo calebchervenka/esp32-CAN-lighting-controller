@@ -18,7 +18,7 @@ public:
     FlashOneShot(CRGB color, float durationMs, float rate) :
         color(color), startTime(0), durationMs(durationMs), invRate(1000/rate), shouldStop(false) {};
     
-    void render(CRGB* target, uint32_t currentTime, uint16_t ledCount) override
+    void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override
     {
         if (startTime == 0) startTime = currentTime;
         uint32_t elapsed = currentTime - startTime;

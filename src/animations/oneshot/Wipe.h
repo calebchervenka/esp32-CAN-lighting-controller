@@ -113,16 +113,15 @@ private:
     uint32_t startTime;
     const uint32_t durationMs;
     const float rate;
-    const bool invDirection;
 
 public:
-    WipeOneShot(CRGB color, uint32_t durationMs, bool invDirection = 0)
-        : color(color), startTime(0), durationMs(durationMs), rate(-1.0f), invDirection(invDirection) {};
+    WipeOneShot(CRGB color, uint32_t durationMs)
+        : color(color), startTime(0), durationMs(durationMs), rate(-1.0f) {};
     
-    WipeOneShot(CRGB color, float rate, bool invDirection = 0)
-        : color(color), startTime(0), durationMs(0), rate(rate), invDirection(invDirection) {};
+    WipeOneShot(CRGB color, float rate)
+        : color(color), startTime(0), durationMs(0), rate(rate) {};
     
-    void render(CRGB* target, uint32_t currentTime, uint16_t ledCount) override
+    void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override
     {
         if (startTime == 0) startTime = currentTime;
 

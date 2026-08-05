@@ -11,7 +11,8 @@ public:
 
     void setColor(CRGB newColor) { color = newColor; }
 
-    void render(CRGB* target, uint32_t currentTime, uint16_t ledCount) override {
+    void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override 
+    {
         fill_solid(target, ledCount, color);
     }
 };

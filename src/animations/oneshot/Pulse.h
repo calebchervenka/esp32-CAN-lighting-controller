@@ -21,7 +21,7 @@ public:
     PulseRateOneShot(CRGB color, uint8_t pulseWidth, float rate = 10.0f)
         : color(color), startTime(0), pulseWidth(pulseWidth), rate(rate) {};
     
-    void render(CRGB* target, uint32_t currentTime, uint16_t ledCount) override
+    void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override
     {
         if (startTime == 0) startTime = currentTime;
         uint32_t elapsed = currentTime - startTime;

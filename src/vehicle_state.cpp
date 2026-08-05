@@ -5,6 +5,8 @@
 #include "animations/oneshot/Wipe.h"
 #include "animations/oneshot/Fade.h"
 
+#define RPMS_THRESHOLD 0x56
+
 FlashOneShot* activeFlashAnim = nullptr;
 
 void updateSportMode(bool current_state) {
@@ -14,11 +16,11 @@ void updateSportMode(bool current_state) {
 
     if (current_state)
     {
-        trigger_one_shot(new WipeRateOneShot(CRGB::OrangeRed, 28.0f));
+        trigger_one_shot(new WipeOneShot(CRGB::OrangeRed, 28.0f));
     }
     else
     {
-        trigger_one_shot(new FadeRateOneShot(CRGB::Red, 20.0f));
+        trigger_one_shot(new FadeOneShot(CRGB::Red, 20.0f));
     }
 }
 
@@ -33,7 +35,7 @@ void updateRawRPMs(uint8_t raw_rpms)
 {
     vehicle_state.raw_rpms = raw_rpms;
 
-    bool rpms_high = raw_rpms > 0x60;
+    bool rpms_high = raw_rpms > RPMS_THRESHOLD;
     if (rpms_high && !vehicle_state.rpms_high)
     {
         if (activeFlashAnim == nullptr) {

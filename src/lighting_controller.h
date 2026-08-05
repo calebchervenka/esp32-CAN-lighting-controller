@@ -76,7 +76,7 @@ inline void lighting_controller_update() {
     uint32_t now = millis();
 
     // 1. Render Base Layer
-    baseAnimation->render(leds_left, now, LED_COUNT_LEFT);
+    baseAnimation->render(leds_left, now, true, LED_COUNT_LEFT);
     baseAnimation->render(leds_right, now, LED_COUNT_RIGHT);
 
     // 2. Render One-Shot Layers & Auto-Cull
@@ -94,7 +94,7 @@ inline void lighting_controller_update() {
             {
                 fallbackBase = final_state;
                 baseAnimation = fallbackBase;
-                baseAnimation->render(leds_left, now, LED_COUNT_LEFT);
+                baseAnimation->render(leds_left, now, true, LED_COUNT_LEFT);
                 baseAnimation->render(leds_right, now, LED_COUNT_RIGHT);
             }
 
@@ -103,7 +103,7 @@ inline void lighting_controller_update() {
             delete node; // Automatically invokes OneShotNode destructor -> deletes node->anim
         } else {
             // Render active layer on top
-            node->anim->render(leds_left, now, LED_COUNT_LEFT);
+            node->anim->render(leds_left, now, true, LED_COUNT_LEFT);
             node->anim->render(leds_right, now, LED_COUNT_RIGHT);
             currPtr = &(node->next);
         }
