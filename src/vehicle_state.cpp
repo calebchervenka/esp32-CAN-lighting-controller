@@ -4,6 +4,7 @@
 #include "animations/oneshot/Flash.h"
 #include "animations/oneshot/Wipe.h"
 #include "animations/oneshot/Fade.h"
+#include "animations/oneshot/Pulse.h"
 
 #define RPMS_THRESHOLD 0x56
 
@@ -29,6 +30,23 @@ void updateTractionCtl(bool current_state)
     if (current_state == vehicle_state.tcs_active) return;
 
     vehicle_state.tcs_active = current_state;
+    trigger_one_shot(new PulseRateOneShot(CRGB::SkyBlue, 12, !vehicle_state.tcs_active, 28.0f));
+}
+
+void updateStabilityCtl(bool current_state)
+{
+    if (current_state == vehicle_state.esc_active) return;
+
+    vehicle_state.esc_active = current_state;
+    trigger_one_shot(new PulseRateOneShot(CRGB::Amethyst, 12, !vehicle_state.esc_active, 48.0f));
+}
+
+void updateCruiseCtl(bool current_state)
+{
+    if (current_state == vehicle_state.cruise_active) return;
+
+    vehicle_state.cruise_active = current_state;
+    trigger_one_shot(new PulseRateOneShot(CRGB::Green, 12, !vehicle_state.cruise_active, 28.0f));
 }
 
 void updateRawRPMs(uint8_t raw_rpms)

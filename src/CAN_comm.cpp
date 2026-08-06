@@ -119,6 +119,11 @@ void handleFrameUpdate(const twai_message_t &frame)
     else if (frame.identifier == 0x153)
     {
         updateTractionCtl(frame.data[0] & 0x04);
+        updateStabilityCtl(frame.data[1] & 0x10);
+    }
+    else if (frame.identifier == 0x260)
+    {
+        updateCruiseCtl(frame.data[3] & 0x02);
     }
 }
 
