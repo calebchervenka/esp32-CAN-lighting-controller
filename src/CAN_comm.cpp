@@ -98,32 +98,8 @@ void handleCANFrames()
     twai_message_t frame;
     // Process ALL backlogged frames currently in queue
     while (twai_receive(&frame, 0) == ESP_OK) {
-        handleFrameUpdate(frame);
+        updateVehicleState(frame);
         sendGVRETFrameOverSerial(frame.identifier, frame.data_length_code, frame.data);
-    }
-}
-
-void handleFrameUpdate(const twai_message_t &frame)
-{
-    if (frame.identifier == 0x381)
-    {
-        updateSportMode(frame.data[0] & 0x04);
-    }
-    else if (frame.identifier == 0x111)
-    {
-        if (frame.data[6] > 0x00000000)
-        {
-            updateRawRPMs(frame.data[6]);
-        }
-    }
-    else if (frame.identifier == 0x153)
-    {
-        updateTractionCtl(frame.data[0] & 0x04);
-        updateStabilityCtl(frame.data[1] & 0x10);
-    }
-    else if (frame.identifier == 0x260)
-    {
-        updateCruiseCtl(frame.data[3] & 0x02);
     }
 }
 

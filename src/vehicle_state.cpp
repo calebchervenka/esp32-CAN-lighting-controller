@@ -10,7 +10,7 @@
 
 FlashOneShot* activeFlashAnim = nullptr;
 
-void updateSportMode(bool current_state) {
+static void updateSportMode(bool current_state) {
     if (current_state == vehicle_state.sport_mode_active) return;
 
     vehicle_state.sport_mode_active = current_state;
@@ -25,7 +25,7 @@ void updateSportMode(bool current_state) {
     }
 }
 
-void updateTractionCtl(bool current_state)
+static void updateTractionCtl(bool current_state)
 {
     if (current_state == vehicle_state.tcs_active) return;
 
@@ -33,7 +33,7 @@ void updateTractionCtl(bool current_state)
     trigger_one_shot(new PulseRateOneShot(CRGB::SkyBlue, 12, !vehicle_state.tcs_active, 28.0f));
 }
 
-void updateStabilityCtl(bool current_state)
+static void updateStabilityCtl(bool current_state)
 {
     if (current_state == vehicle_state.esc_active) return;
 
@@ -41,7 +41,7 @@ void updateStabilityCtl(bool current_state)
     trigger_one_shot(new PulseRateOneShot(CRGB::Amethyst, 12, !vehicle_state.esc_active, 48.0f));
 }
 
-void updateCruiseCtl(bool current_state)
+static void updateCruiseCtl(bool current_state)
 {
     if (current_state == vehicle_state.cruise_active) return;
 
@@ -49,7 +49,7 @@ void updateCruiseCtl(bool current_state)
     trigger_one_shot(new PulseRateOneShot(CRGB::Green, 12, !vehicle_state.cruise_active, 28.0f));
 }
 
-void updateRawRPMs(uint8_t raw_rpms)
+static void updateRawRPMs(uint8_t raw_rpms)
 {
     vehicle_state.raw_rpms = raw_rpms;
 
@@ -69,4 +69,25 @@ void updateRawRPMs(uint8_t raw_rpms)
         }
     }
     vehicle_state.rpms_high = rpms_high;
+}
+
+void updateVehicleState(twai_message_t frame)
+{
+    if (frame.identifier == 0x381)
+    {
+        updateSportMode(frame.data[0] & 0x04);
+    }
+    else if (frame.identifier == 0x111)
+    {
+        updateRawRPMs(frame.data[6] & 0xff);
+    }
+    else if (frame.identifier == 0x153)
+    {
+        updateTractionCtl(frame.data[0] & 0x04);
+        updateStabilityCtl(frame.data[1] & 0x10);
+    }
+    else if (frame.identifier == 0x260)
+    {
+        updateCruiseCtl(frame.data[3] & 0x02);
+    }
 }
