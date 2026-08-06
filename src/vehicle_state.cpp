@@ -6,6 +6,7 @@
 #include "animations/oneshot/Fade.h"
 #include "animations/oneshot/Pulse.h"
 
+// High RPMs lighting event triggers when vehicle RPM signal crosses this threshold
 #define RPMS_THRESHOLD 0x56
 
 FlashOneShot* activeFlashAnim = nullptr;
