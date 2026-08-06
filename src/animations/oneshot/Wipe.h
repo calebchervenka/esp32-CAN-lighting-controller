@@ -131,16 +131,16 @@ public:
 
         if (invDirection)
         {
-            for (uint16_t i = 0; i < litCount; ++i) 
+            for (uint16_t i = 0; i < litCount; i++)
             {
-                target[i] = color;
+                target[ledCount - i - 1] = color;
             }
         }
         else
         {
-            for (uint16_t i = 0; i < litCount; i++)
+            for (uint16_t i = 0; i < litCount; ++i) 
             {
-                target[ledCount - i - 1] = color;
+                target[i] = color;
             }
         }
     }
