@@ -25,26 +25,24 @@
 #define LED_PIN_RIGHT 14
 #endif
 
-namespace {
-    CRGB leds_left[LED_COUNT_LEFT];           // Internal engine state
-    CRGB layerBuffer_left[LED_COUNT_LEFT];    // Buffer for layer compositing
+inline CRGB leds_left[LED_COUNT_LEFT];           // Internal engine state
+inline CRGB layerBuffer_left[LED_COUNT_LEFT];    // Buffer for layer compositing
 
-    CRGB leds_right[LED_COUNT_RIGHT];           // Internal engine state
-    CRGB layerBuffer_right[LED_COUNT_RIGHT];    // Buffer for layer compositing
+inline CRGB leds_right[LED_COUNT_RIGHT];           // Internal engine state
+inline CRGB layerBuffer_right[LED_COUNT_RIGHT];    // Buffer for layer compositing
 
-    // Linked list node for dynamic One-Shots
-    struct OneShotNode {
-        OneShotAnimation* anim;
-        OneShotNode* next;
+// Linked list node for dynamic One-Shots
+struct OneShotNode {
+    OneShotAnimation* anim;
+    OneShotNode* next;
 
-        OneShotNode(OneShotAnimation* a) : anim(a), next(nullptr) {}
-        ~OneShotNode() { delete anim; }
-    };
+    OneShotNode(OneShotAnimation* a) : anim(a), next(nullptr) {}
+    ~OneShotNode() { delete anim; }
+};
 
-    IndefiniteAnimation* baseAnimation = nullptr;
-    IndefiniteAnimation* fallbackBase = nullptr;
-    OneShotNode* oneShotHead = nullptr;
-}
+inline IndefiniteAnimation* baseAnimation = nullptr;
+inline IndefiniteAnimation* fallbackBase = nullptr;
+inline OneShotNode* oneShotHead = nullptr;
 
 /**
  * @brief Initialize FastLED hardware. Call once in setup().
@@ -77,7 +75,7 @@ inline void lighting_controller_update() {
 
     // 1. Render Base Layer
     baseAnimation->render(leds_left, now, true, LED_COUNT_LEFT);
-    baseAnimation->render(leds_right, now, LED_COUNT_RIGHT);
+    baseAnimation->render(leds_right, now, false, LED_COUNT_RIGHT);
 
     // 2. Render One-Shot Layers & Auto-Cull
     OneShotNode** currPtr = &oneShotHead;
@@ -95,7 +93,7 @@ inline void lighting_controller_update() {
                 fallbackBase = final_state;
                 baseAnimation = fallbackBase;
                 baseAnimation->render(leds_left, now, true, LED_COUNT_LEFT);
-                baseAnimation->render(leds_right, now, LED_COUNT_RIGHT);
+                baseAnimation->render(leds_right, now, false, LED_COUNT_RIGHT);
             }
 
             // Unlink & free memory
@@ -104,7 +102,7 @@ inline void lighting_controller_update() {
         } else {
             // Render active layer on top
             node->anim->render(leds_left, now, true, LED_COUNT_LEFT);
-            node->anim->render(leds_right, now, LED_COUNT_RIGHT);
+            node->anim->render(leds_right, now, false, LED_COUNT_RIGHT);
             currPtr = &(node->next);
         }
     }

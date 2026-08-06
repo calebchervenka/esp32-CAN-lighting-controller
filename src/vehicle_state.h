@@ -10,10 +10,7 @@ typedef struct __vehicle_state_t
     bool rpms_high = false;
 } vehicle_state_t;
 
-namespace
-{
-    vehicle_state_t vehicle_state;
-}
+inline vehicle_state_t vehicle_state;
 
 // Lighting methods
 void updateSportMode(bool current_state);
