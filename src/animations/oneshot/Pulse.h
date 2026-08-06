@@ -8,6 +8,7 @@ private:
     CRGB color;
     uint32_t startTime;
     uint8_t pulseWidth;
+    bool invDirection_;
     float rate;
 
 public:
@@ -18,11 +19,12 @@ public:
      * 
      * A rate of `10.0f` is equivalent to a duration of `1000ms` with `144` LEDs.
      */
-    PulseRateOneShot(CRGB color, uint8_t pulseWidth, float rate = 10.0f)
-        : color(color), startTime(0), pulseWidth(pulseWidth), rate(rate) {};
+    PulseRateOneShot(CRGB color, uint8_t pulseWidth, bool invDirection, float rate = 10.0f)
+        : color(color), startTime(0), pulseWidth(pulseWidth), invDirection_(invDirection), rate(rate) {};
     
     void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override
     {
+        if (ledCount == 0) return;
         if (startTime == 0) startTime = currentTime;
         uint32_t elapsed = currentTime - startTime;
 
@@ -30,8 +32,18 @@ public:
 
         uint16_t litCount = map(min(elapsed, durationMs), 0, durationMs, 0, (ledCount + pulseWidth));
         uint16_t unlitCount = max(litCount - pulseWidth, 0);
-        for (uint16_t i = unlitCount; i < litCount && i < ledCount; ++i) {
-            target[i] = color; // Alpha blend over lower layers
+
+        if (invDirection ^ invDirection_)
+        {
+            for (uint16_t i = unlitCount; i < litCount && i < ledCount; ++i) {
+                target[ledCount - i - 1] = color; // Alpha blend over lower layers
+            }
+        }
+        else
+        {
+            for (uint16_t i = unlitCount; i < litCount && i < ledCount; ++i) {
+                target[i] = color; // Alpha blend over lower layers
+            }
         }
     }
 

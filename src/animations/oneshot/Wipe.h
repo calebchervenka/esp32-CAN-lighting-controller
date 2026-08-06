@@ -123,6 +123,7 @@ public:
     
     void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override
     {
+        if (ledCount == 0) return;
         if (startTime == 0) startTime = currentTime;
 
         uint32_t elapsed = currentTime - startTime;
