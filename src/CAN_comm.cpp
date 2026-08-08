@@ -2,6 +2,8 @@
 
 #include <HardwareSerial.h>
 
+#define SEND_GVRET_FRAMES_OVER_SERIAL 0
+
 void initSerial()
 {
     Serial.begin(115200);
@@ -99,7 +101,9 @@ void handleCANFrames()
     // Process ALL backlogged frames currently in queue
     while (twai_receive(&frame, 0) == ESP_OK) {
         updateVehicleState(frame);
-        sendGVRETFrameOverSerial(frame.identifier, frame.data_length_code, frame.data);
+        #if SEND_GVRET_FRAMES_OVER_SERIAL
+        // sendGVRETFrameOverSerial(frame.identifier, frame.data_length_code, frame.data);
+        #endif
     }
 }
 
