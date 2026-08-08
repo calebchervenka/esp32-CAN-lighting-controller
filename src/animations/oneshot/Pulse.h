@@ -5,7 +5,6 @@
 class PulseOneShot : public OneShotAnimation
 {
 private:
-    CRGB color;
     uint32_t startTime;
     uint8_t pulseWidth;
     bool invDirection_;
@@ -21,7 +20,7 @@ public:
      */
     PulseOneShot(CRGB color, uint8_t pulseWidth, bool invDirection, float rate = 10.0f)
         : OneShotAnimation(color, invDirection),
-            color(color), startTime(0), pulseWidth(pulseWidth), invDirection_(invDirection), rate(rate) {};
+            startTime(0), pulseWidth(pulseWidth), invDirection_(invDirection), rate(rate) {};
     
     void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override
     {

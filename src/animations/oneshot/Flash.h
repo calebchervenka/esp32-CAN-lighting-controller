@@ -5,7 +5,6 @@
 class FlashOneShot : public OneShotAnimation
 {
 private:
-    CRGB color;
     uint32_t startTime;
     uint32_t durationMs;
 
@@ -15,11 +14,11 @@ private:
 public:
     FlashOneShot(CRGB color, uint16_t count, float rate) 
         : OneShotAnimation(color, false),
-            color(color), startTime(0), durationMs(rate / count), invRate(1000/rate), shouldStop(false) {};
+            startTime(0), durationMs(rate / count), invRate(1000/rate), shouldStop(false) {};
 
     FlashOneShot(CRGB color, float durationMs, float rate) 
     : OneShotAnimation(color, false),
-        color(color), startTime(0), durationMs(durationMs), invRate(1000/rate), shouldStop(false) {};
+        startTime(0), durationMs(durationMs), invRate(1000/rate), shouldStop(false) {};
     
     void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override
     {

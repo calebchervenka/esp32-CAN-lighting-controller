@@ -9,7 +9,6 @@
 class WipeOneShot : public OneShotAnimation
 {
 private:
-    const CRGB color;
     uint32_t startTime;
     const uint32_t durationMs;
     const float rate;
@@ -17,11 +16,11 @@ private:
 public:
     WipeOneShot(CRGB color, uint32_t durationMs)
         : OneShotAnimation(color, false),
-            color(color), startTime(0), durationMs(durationMs), rate(-1.0f) {};
+            startTime(0), durationMs(durationMs), rate(-1.0f) {};
     
     WipeOneShot(CRGB color, float rate)
         : OneShotAnimation(color, false),
-            color(color), startTime(0), durationMs(0), rate(rate) {};
+            startTime(0), durationMs(0), rate(rate) {};
     
     void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override
     {
@@ -36,8 +35,7 @@ public:
         {
             for (uint16_t i = 0; i < litCount; i++)
             {
-                // target[ledCount - i - 1] = color;
-                // target[ledCount - i - 1] = fl::HSV16(color.toHSV16().h, color.toHSV16().s, target[ledCount - i - 1].toHSV16().v);
+                target[ledCount - i - 1] = fl::HSV16(color.toHSV16().h, color.toHSV16().s, target[ledCount - i - 1].toHSV16().v);
             }
         }
         else

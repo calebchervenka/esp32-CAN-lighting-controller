@@ -27,9 +27,3 @@ typedef struct __vehicle_state_t
 inline vehicle_state_t vehicle_state;
 
 void updateVehicleState(twai_message_t frame);
-
-// void updateSportMode(bool current_state);
-// void updateTractionCtl(bool current_state);
-// void updateStabilityCtl(bool current_state);
-// void updateCruiseCtl(bool current_state);
-// void updateRawRPMs(uint8_t raw_rpms);
