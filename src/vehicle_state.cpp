@@ -9,9 +9,6 @@
 
 #include "config.h"
 
-// High RPMs lighting event triggers when vehicle RPM signal crosses this threshold
-#define RPMS_THRESHOLD 0x56
-
 // CAN bus frame IDs
 constexpr uint32_t FRAME_DRIVE_MODE(0x381);
 constexpr uint32_t FRAME_RAW_RPMS(0x111);
@@ -82,7 +79,7 @@ static void updateRawRPMs(uint8_t raw_rpms)
 }   
 
 static void updatePRNDS(TRANS_MODE old, uint8_t current)
-    {
+{
     switch ((static_cast<uint8_t>(old) << 4) | current)
         {
             // Adjacent shifts
