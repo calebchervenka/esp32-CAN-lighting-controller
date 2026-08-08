@@ -38,7 +38,7 @@ static void updateTractionCtl(bool current_state)
     if (current_state == vehicle_state.tcs_active) return;
 
     vehicle_state.tcs_active = current_state;
-    trigger_one_shot(new PulseRateOneShot(CRGB::SkyBlue, 12, !vehicle_state.tcs_active, 28.0f));
+    trigger_one_shot(new PulseOneShot(CRGB::SkyBlue, 12, !vehicle_state.tcs_active, 28.0f));
 }
 
 static void updateStabilityCtl(bool current_state)
@@ -46,7 +46,7 @@ static void updateStabilityCtl(bool current_state)
     if (current_state == vehicle_state.esc_active) return;
 
     vehicle_state.esc_active = current_state;
-    trigger_one_shot(new PulseRateOneShot(CRGB::Amethyst, 12, !vehicle_state.esc_active, 48.0f));
+    trigger_one_shot(new PulseOneShot(CRGB::Amethyst, 12, !vehicle_state.esc_active, 48.0f));
 }
 
 static void updateCruiseCtl(bool current_state)
@@ -54,7 +54,7 @@ static void updateCruiseCtl(bool current_state)
     if (current_state == vehicle_state.cruise_active) return;
 
     vehicle_state.cruise_active = current_state;
-    trigger_one_shot(new PulseRateOneShot(CRGB::Green, 12, !vehicle_state.cruise_active, 28.0f));
+    trigger_one_shot(new PulseOneShot(CRGB::Green, 12, !vehicle_state.cruise_active, 28.0f));
 }
 
 static void updateRawRPMs(uint8_t raw_rpms)
@@ -77,7 +77,7 @@ static void updateRawRPMs(uint8_t raw_rpms)
         }
     }
     vehicle_state.rpms_high = rpms_high;
-}
+}   
 
 static void updatePRNDS(uint8_t data)
 {
@@ -122,7 +122,7 @@ static void updatePRNDS(uint8_t data)
 }
 
 static void updateFrame_111(uint8_t* frame_data)
-    {
+{
     updateRawRPMs(frame_data[6] & 0xff);
     updatePRNDS(frame_data[1]);
 }

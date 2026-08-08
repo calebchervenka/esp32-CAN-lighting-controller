@@ -2,7 +2,7 @@
 
 #include "animations/animations.h"
 
-class PulseRateOneShot : public OneShotAnimation
+class PulseOneShot : public OneShotAnimation
 {
 private:
     CRGB color;
@@ -19,7 +19,7 @@ public:
      * 
      * A rate of `10.0f` is equivalent to a duration of `1000ms` with `144` LEDs.
      */
-    PulseRateOneShot(CRGB color, uint8_t pulseWidth, bool invDirection, float rate = 10.0f)
+    PulseOneShot(CRGB color, uint8_t pulseWidth, bool invDirection, float rate = 10.0f)
         : color(color), startTime(0), pulseWidth(pulseWidth), invDirection_(invDirection), rate(rate) {};
     
     void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override
