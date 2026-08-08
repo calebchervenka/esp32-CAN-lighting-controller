@@ -30,6 +30,11 @@ public:
     {
         invDirection = inverted;
     }
+
+    bool toggleDirection()
+    {
+        invDirection = !invDirection;
+    }
 };
 
 class IndefiniteAnimation : public Animation
