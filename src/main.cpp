@@ -1,17 +1,14 @@
 #include <Arduino.h>
 
 #include "lighting_controller.h"
-#include "animations/indefinite/Static.h"
 #include "CAN_comm.h"
 #include "vehicle_state.h"
-
-// Animations
-StaticColorAnimation redStatic(CRGB::Red);
+#include "config.h"
 
 // Application
 void setup() {
     initSerial();
-    lighting_controller_setup(&redStatic);
+    lighting_controller_setup(configBaseAnimation);
     initTWAI();
 }
 

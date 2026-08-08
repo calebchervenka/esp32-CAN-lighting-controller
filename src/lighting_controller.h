@@ -5,6 +5,7 @@
 #define FASTLED_INTERNAL
 #define FASTLED_ESP32_RAW_PIN_ORDER
 #include <FastLED.h>
+#include <fl/hsv16.h>
 
 #include "animations/animations.h"
 
@@ -40,9 +41,21 @@ struct OneShotNode {
     ~OneShotNode() { delete anim; }
 };
 
-inline IndefiniteAnimation* baseAnimation = nullptr;
-inline IndefiniteAnimation* fallbackBase = nullptr;
 inline OneShotNode* oneShotHead = nullptr;
+
+/**
+ * @brief Set or change the background/indefinite animation loop.
+ */
+void set_base_animation(IndefiniteAnimation* anim);
+
+IndefiniteAnimation* get_base_animation();
+
+/**
+ * @brief Set or change the fallback background/indefinite animation. This animation is used when an invalid animation is provided to a `set_base_animation()` call.
+ */
+void set_fallback_base_animation(IndefiniteAnimation* anim);
+
+IndefiniteAnimation* get_fallback_base_animation();
 
 /**
  * @brief Initialize FastLED hardware. Call once in setup().
@@ -51,14 +64,9 @@ inline void lighting_controller_setup(IndefiniteAnimation* fallback) {
     FastLED.addLeds<WS2812B, LED_PIN_LEFT, GRB>(leds_left, LED_COUNT_LEFT);
     FastLED.addLeds<WS2812B, LED_PIN_RIGHT, GRB>(leds_right, LED_COUNT_RIGHT);
     FastLED.clear(true);
-    fallbackBase = fallback;
-    baseAnimation = fallbackBase;
+    set_fallback_base_animation(fallback);
+    set_base_animation(get_fallback_base_animation());
 }
-
-/**
- * @brief Set or change the background/indefinite animation loop.
- */
-void set_base_animation(IndefiniteAnimation* anim);
 
 /**
  * @brief Add a one-shot animation to the stack.
@@ -74,8 +82,8 @@ inline void lighting_controller_update() {
     uint32_t now = millis();
 
     // 1. Render Base Layer
-    baseAnimation->render(leds_left, now, true, LED_COUNT_LEFT);
-    baseAnimation->render(leds_right, now, false, LED_COUNT_RIGHT);
+    get_base_animation()->render(leds_left, now, true, LED_COUNT_LEFT);
+    get_base_animation()->render(leds_right, now, false, LED_COUNT_RIGHT);
 
     // 2. Render One-Shot Layers & Auto-Cull
     OneShotNode** currPtr = &oneShotHead;
@@ -87,14 +95,10 @@ inline void lighting_controller_update() {
         const bool rightFinished = node->anim->isFinished(now, LED_COUNT_RIGHT);
 
         if (leftFinished && rightFinished) {
-            IndefiniteAnimation* final_state = node->anim->getFinalState();
-            if (final_state)
-            {
-                fallbackBase = final_state;
-                baseAnimation = fallbackBase;
-                baseAnimation->render(leds_left, now, true, LED_COUNT_LEFT);
-                baseAnimation->render(leds_right, now, false, LED_COUNT_RIGHT);
-            }
+            node->anim->onFinish(*get_base_animation());
+            
+            node->anim->render(leds_left, now, true, LED_COUNT_LEFT);
+            node->anim->render(leds_right, now, false, LED_COUNT_RIGHT);
 
             // Unlink & free memory
             *currPtr = node->next;

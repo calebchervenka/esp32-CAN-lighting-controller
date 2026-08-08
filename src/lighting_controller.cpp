@@ -1,10 +1,31 @@
 #include "lighting_controller.h"
 
+IndefiniteAnimation* baseAnimation = nullptr;
+IndefiniteAnimation* fallbackBase = nullptr;
+
 void set_base_animation(IndefiniteAnimation* anim) {
     if (anim != nullptr) {
         baseAnimation = anim;
     } else {
         baseAnimation = fallbackBase;
+    }
+}
+
+IndefiniteAnimation* get_base_animation()
+{
+    return baseAnimation;
+}
+
+IndefiniteAnimation* get_fallback_base_animation()
+{
+    return fallbackBase;
+}
+
+void set_fallback_base_animation(IndefiniteAnimation* anim)
+{
+    if (anim != nullptr)
+    {
+        fallbackBase = anim;
     }
 }
 
