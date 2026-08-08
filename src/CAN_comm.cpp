@@ -7,8 +7,11 @@
 void initSerial()
 {
     Serial.begin(115200);
+}
 
-    // ESP32-C6 USB CDC needs the host connection to be open before data is emitted.
+void initTWAI() 
+{
+    // Connect to SavvyCAN
     uint32_t start = millis();
     while (!Serial && (millis() - start) < 500) {
         delay(10);
@@ -18,10 +21,8 @@ void initSerial()
     Serial.write(0xE7);
     Serial.write(0xE7);
     Serial.flush();
-}
 
-void initTWAI() 
-{
+    // Configure TWAI
     can0.config.listen_only = true;
     twai_general_config_t g_config = TWAI_GENERAL_CONFIG_DEFAULT(GPIO_NUM_17, GPIO_NUM_16, can0.config.listen_only ? TWAI_MODE_LISTEN_ONLY : TWAI_MODE_NORMAL);
     g_config.rx_queue_len = 24;
