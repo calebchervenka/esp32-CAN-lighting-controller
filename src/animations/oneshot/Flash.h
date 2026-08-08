@@ -13,9 +13,12 @@ private:
     mutable bool shouldStop;
 
 public:
-    FlashOneShot(CRGB color, uint16_t count, float rate) :
-        color(color), startTime(0), durationMs(rate / count), invRate(1000/rate), shouldStop(false) {};
-    FlashOneShot(CRGB color, float durationMs, float rate) :
+    FlashOneShot(CRGB color, uint16_t count, float rate) 
+        : OneShotAnimation(color, false),
+            color(color), startTime(0), durationMs(rate / count), invRate(1000/rate), shouldStop(false) {};
+
+    FlashOneShot(CRGB color, float durationMs, float rate) 
+    : OneShotAnimation(color, false),
         color(color), startTime(0), durationMs(durationMs), invRate(1000/rate), shouldStop(false) {};
     
     void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override
@@ -43,7 +46,10 @@ public:
         shouldStop = true;
     }
 
-    IndefiniteAnimation* getFinalState() const override { return nullptr; }
+    void onFinish(IndefiniteAnimation& current_base)
+    {
+        return;
+    }
 
     uint32_t getDuration(uint16_t ledCount) const
     {

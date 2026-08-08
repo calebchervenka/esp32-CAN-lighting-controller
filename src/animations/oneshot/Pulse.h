@@ -20,7 +20,8 @@ public:
      * A rate of `10.0f` is equivalent to a duration of `1000ms` with `144` LEDs.
      */
     PulseOneShot(CRGB color, uint8_t pulseWidth, bool invDirection, float rate = 10.0f)
-        : color(color), startTime(0), pulseWidth(pulseWidth), invDirection_(invDirection), rate(rate) {};
+        : OneShotAnimation(color, invDirection),
+            color(color), startTime(0), pulseWidth(pulseWidth), invDirection_(invDirection), rate(rate) {};
     
     void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override
     {
@@ -53,7 +54,11 @@ public:
         return (startTime != 0) && (currentTime - startTime >= durationMs);
     }
 
-    IndefiniteAnimation* getFinalState() const override { return nullptr; }
+    void onFinish(IndefiniteAnimation& current_base)
+    {
+        // current_base_color = color;
+        return;
+    }
 
     uint32_t getDuration(uint16_t ledCount) const
     {

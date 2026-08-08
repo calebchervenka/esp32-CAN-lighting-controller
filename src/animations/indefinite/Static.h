@@ -4,10 +4,9 @@
 
 class StaticColorAnimation : public IndefiniteAnimation {
 private:
-    CRGB color;
 
 public:
-    StaticColorAnimation(CRGB color) : color(color) {}
+    StaticColorAnimation(CRGB color) : IndefiniteAnimation(color, false) {};
 
     void setColor(CRGB newColor) { color = newColor; }
 

@@ -3,7 +3,14 @@
 #include <FastLED.h>
 
 class Animation {
+protected:
+
+    Animation(CRGB color, bool invDirection) :
+        color(color), invDirection(invDirection) {};
 public:
+    CRGB color;
+    bool invDirection;
+
     virtual ~Animation() = default;
 
     /**
@@ -13,12 +20,31 @@ public:
      * @param ledCount Size of CRGB buffer.
      */
     virtual void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) = 0;
+
+    void setColor(CRGB newColor)
+    {
+        color = newColor;
+    }
+
+    void setDirection(bool inverted)
+    {
+        invDirection = inverted;
+    }
 };
 
-class IndefiniteAnimation : public Animation {};
+class IndefiniteAnimation : public Animation
+{
+protected:
+    IndefiniteAnimation(CRGB color, bool invDirection)
+        : Animation(color, invDirection) {};
+};
 
-class OneShotAnimation : public Animation {
-    IndefiniteAnimation* final_state = nullptr;
+class OneShotAnimation : public Animation 
+{
+protected:
+    OneShotAnimation(CRGB color, bool invDirection)
+        : Animation(color, invDirection) {};
+
 public:
     virtual ~OneShotAnimation() = default;
 
@@ -28,7 +54,7 @@ public:
     virtual bool isFinished(uint32_t currentTime, uint16_t ledCount) const = 0;
 
     /**
-     * @return The final color this one-shot leaves behind after ending.
+     * @brief Is executed when a one-shot animation finishes. Use to modify the existing base animation.
      */
-    virtual IndefiniteAnimation* getFinalState() const = 0;
+    virtual void onFinish(IndefiniteAnimation& current_base) = 0;
 };

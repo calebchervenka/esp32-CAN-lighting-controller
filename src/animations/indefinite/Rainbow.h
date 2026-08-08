@@ -8,8 +8,8 @@ private:
     uint8_t deltaHue;
 
 public:
-    RainbowAnimation(uint8_t speed = 20, uint8_t deltaHue = 7)
-        : speed(speed), deltaHue(deltaHue) {}
+    RainbowAnimation(uint8_t speed = 20, uint8_t deltaHue = 7, bool invDirection)
+        : IndefiniteAnimation(CRGB::Black, invDirection), speed(speed), deltaHue(deltaHue) {};
 
     void render(CRGB* target, uint32_t currentTime, bool invDirection, uint16_t ledCount) override 
     {
