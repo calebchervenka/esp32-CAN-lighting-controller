@@ -34,6 +34,7 @@ public:
     bool toggleDirection()
     {
         invDirection = !invDirection;
+        return invDirection;
     }
 };
 

@@ -35,10 +35,12 @@ inline CRGB layerBuffer_right[LED_COUNT_RIGHT];    // Buffer for layer compositi
 // Linked list node for dynamic One-Shots
 struct OneShotNode {
     OneShotAnimation* anim;
+    OneShotNode* prev;
     OneShotNode* next;
 
-    OneShotNode(OneShotAnimation* a) : anim(a), next(nullptr) {}
-    ~OneShotNode() { delete anim; }
+    OneShotNode(OneShotAnimation* a, OneShotNode* parent) : anim(a), prev(parent), next(nullptr) {}
+    OneShotNode(OneShotAnimation* a) : anim(a), prev(nullptr), next(nullptr) {}
+    ~OneShotNode() { }
 };
 
 inline OneShotNode* oneShotHead = nullptr;
@@ -58,7 +60,7 @@ void set_fallback_base_animation(IndefiniteAnimation* anim);
 IndefiniteAnimation* get_fallback_base_animation();
 
 /**
- * @brief Initialize FastLED hardware. Call once in setup().
+ * @brief Initialize FastLED hardware.
  */
 inline void lighting_controller_setup(IndefiniteAnimation* fallback) {
     FastLED.addLeds<WS2812B, LED_PIN_LEFT, GRB>(leds_left, LED_COUNT_LEFT);
@@ -69,10 +71,16 @@ inline void lighting_controller_setup(IndefiniteAnimation* fallback) {
 }
 
 /**
- * @brief Add a one-shot animation to the stack.
- * Transfers ownership of the pointer to the controller (smart management).
+ * @brief Add a one-shot animation to the one-shot animation stack.
+ * @return Address to the created node.
  */
-void trigger_one_shot(OneShotAnimation* anim);
+OneShotNode* trigger_one_shot(OneShotAnimation* anim);
+
+/**
+ * @brief Deletes the node's animation, removes the node from the one-shot animation stack, and deletes the node object.
+ * Note: The pointer passed to this method will be invalid.
+ */
+void cancel_one_shot(OneShotNode** pNode);
 
 /**
  * @brief Main engine loop. Call every loop execution.
@@ -100,9 +108,7 @@ inline void lighting_controller_update() {
             node->anim->render(leds_left, now, true, LED_COUNT_LEFT);
             node->anim->render(leds_right, now, false, LED_COUNT_RIGHT);
 
-            // Unlink & free memory
-            *currPtr = node->next;
-            delete node; // Automatically invokes OneShotNode destructor -> deletes node->anim
+            cancel_one_shot(&node);
         } else {
             // Render active layer on top
             node->anim->render(leds_left, now, true, LED_COUNT_LEFT);

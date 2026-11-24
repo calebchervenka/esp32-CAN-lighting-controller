@@ -2,6 +2,7 @@
 
 #include "lighting_controller.h"
 #include "animations/oneshot/Flash.h"
+#include "animations/oneshot/InfiniteFlashOneShot.h"
 #include "animations/custom/SportMode.h"
 #include "animations/custom/TractionControl.h"
 #include "animations/custom/StabilityControl.h"
@@ -15,7 +16,7 @@ constexpr uint32_t FRAME_RAW_RPMS(0x111);
 constexpr uint32_t FRAME_TCS_ESC_CTL(0x153);
 constexpr uint32_t FRAME_CRUISE_CTL(0x260);
 
-FlashOneShot* activeFlashAnim = nullptr;
+OneShotNode* activeFlashAnimNode = nullptr;
 
 static void updateSportMode(bool current_state) {
     if (current_state == vehicle_state.sport_mode_active) return;
@@ -63,17 +64,13 @@ static void updateRawRPMs(uint8_t raw_rpms)
     bool rpms_high = raw_rpms > RPMS_THRESHOLD;
     if (rpms_high && !vehicle_state.rpms_high)
     {
-        if (activeFlashAnim == nullptr) {
-            activeFlashAnim = new FlashOneShot(CRGB::Black, 4000.0f, 10.0f);
+        if (activeFlashAnimNode == nullptr) {
+            activeFlashAnimNode = trigger_one_shot(new InfiniteFlashOneShot(CRGB::Black, 4000.0f, 10.0f));
         }
-        trigger_one_shot(activeFlashAnim);
     }
     else if (!rpms_high && vehicle_state.rpms_high)
     {
-        if (activeFlashAnim != nullptr) {
-            activeFlashAnim->stop();
-            activeFlashAnim = nullptr;
-        }
+        cancel_one_shot(&activeFlashAnimNode);
     }
     vehicle_state.rpms_high = rpms_high;
 }   
@@ -83,10 +80,10 @@ static void updatePRNDS(TRANS_MODE old, uint8_t current)
     switch ((static_cast<uint8_t>(old) << 4) | current)
         {
             // Adjacent shifts
-            case 0x07: Serial.println("P to R"); configBaseAnimation->toggleDirection(); break; // P -> R
-            case 0x70: Serial.println("R to P"); configBaseAnimation->toggleDirection(); break; // R -> P
-            case 0x76: Serial.println("R to N"); configBaseAnimation->toggleDirection(); break; // R -> N
-            case 0x67: Serial.println("N to R"); configBaseAnimation->toggleDirection(); break; // N -> R
+            case 0x07: Serial.println("P to R"); get_base_animation()->toggleDirection(); break; // P -> R
+            case 0x70: Serial.println("R to P"); get_base_animation()->toggleDirection(); break; // R -> P
+            case 0x76: Serial.println("R to N"); get_base_animation()->toggleDirection(); break; // R -> N
+            case 0x67: Serial.println("N to R"); get_base_animation()->toggleDirection(); break; // N -> R
             case 0x65: Serial.println("N to D"); break; // N -> D
             case 0x56: Serial.println("D to N"); break; // D -> N
             case 0x58: Serial.println("D to S"); trigger_one_shot(new PulseOneShot(CRGB::Amethyst, 12, false, 24.0f)); break; // D -> S
