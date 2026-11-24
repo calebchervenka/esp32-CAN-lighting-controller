@@ -8,7 +8,7 @@
 inline IndefiniteAnimation* configBaseAnimation = new StaticColorAnimation(CRGB::Red);
 
 // High RPMs lighting event triggers when vehicle RPM signal crosses this threshold
-#define RPMS_THRESHOLD 0x51
+#define RPMS_THRESHOLD 0x4b
 
 #define COLOR_SPORT_MODE CRGB::OrangeRed
 #define COLOR_NORMAL_MODE CRGB::Red
