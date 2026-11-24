@@ -103,7 +103,7 @@ void handleCANFrames()
     while (twai_receive(&frame, 0) == ESP_OK) {
         updateVehicleState(frame);
         #if SEND_GVRET_FRAMES_OVER_SERIAL
-        // sendGVRETFrameOverSerial(frame.identifier, frame.data_length_code, frame.data);
+        sendGVRETFrameOverSerial(frame.identifier, frame.data_length_code, frame.data);
         #endif
     }
 }
@@ -233,7 +233,6 @@ bool getBitFromFrame(const twai_message_t &frame, uint8_t bit_index) {
 }
 
 void sendGVRETFrameOverSerial(uint32_t id, uint8_t dlc, const uint8_t* data) {
-    #ifdef SEND_FRAMES_OVER_SERIAL
     uint8_t buf[20];
     buf[0] = 0xF1;
     buf[1] = 0x00;
@@ -258,5 +257,4 @@ void sendGVRETFrameOverSerial(uint32_t id, uint8_t dlc, const uint8_t* data) {
 
     Serial.write(buf, sizeof(buf));
     // Serial.flush();
-    #endif
 }

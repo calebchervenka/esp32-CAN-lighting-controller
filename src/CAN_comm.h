@@ -1,10 +1,7 @@
 #pragma once
 
 #include "driver/twai.h"
-
 #include "vehicle_state.h"
-
-#define SEND_FRAMES_OVER_SERIAL
 
 enum PARSER_STATE
 {
